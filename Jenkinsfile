@@ -5,7 +5,7 @@
 pipeline {
     agent any
     environment {
-        TARGET = ""
+        TARGET = "run"
     }
     stages {
 
