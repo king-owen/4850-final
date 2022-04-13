@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    stages {
+
+        stage('Lint') {
+            steps{
+                sh 'pylint-fail-under --fail_under 5.0 ./audit/app.py'
+                sh 'pylint-fail-under --fail_under 5.0 ./processing/app.py'
+                sh 'pylint-fail-under --fail_under 5.0 ./receiver/app.py'
+                sh 'pylint-fail-under --fail_under 5.0 ./storage/app.py'
+            }
+        }
+        stage('Package') { 
+            steps {     
+                withCredentials([string(credentialsId: 'DockerHub',variable:'TOKEN')]) { 
+                    sh "docker login -u 'kingofthewestwest' -p '$TOKEN' docker.io" 
+                    //fix this so it builds and pushes all of the images
+                    sh "docker build -t audit:latest --tag kingofthewestwest/audit ./audit/." 
+                    sh "docker push kingofthewestwest/audit" 
+                    sh "docker build -t processing:latest --tag kingofthewestwest/processing ./processing/." 
+                    sh "docker push kingofthewestwest/processing" 
+                    sh "docker build -t receiver:latest --tag kingofthewestwest/receiver ./receiver/." 
+                    sh "docker push kingofthewestwest/receiver" 
+                    sh "docker build -t storage:latest --tag kingofthewestwest/storage ./storage/." 
+                    sh "docker push kingofthewestwest/storage" 
+                } 
+            } 
+        } 
+        stage("Confirm Image/Show Image") {
+            steps {
+                withCredentials([string(credentialsId: 'DockerHub',variable:'TOKEN')]) { 
+                    sh "docker login -u 'kingofthewestwest' -p '$TOKEN' docker.io"
+                    sh "docker manifest inspect kingofthewestwest/audit"
+                    sh "docker manifest inspect kingofthewestwest/processing"
+                    sh "docker manifest inspect kingofthewestwest/receiver"
+                    sh "docker manifest inspect kingofthewestwest/storage"
+                }
+            }
+        }       
+      //make this work and maybe take out the params.DEPLOY
+         stage("Deploy") {
+            //when {
+                //expression { params.DEPLOY }
+            //}
+            steps {
+                //sh "docker stop ${dockerRepoName} || true && docker rm ${dockerRepoName} || true"
+                //sh "docker run -d -p ${portNum}:${portNum} --name ${dockerRepoName} ${dockerRepoName}:latest"
+                sshagent(credentials : ['owen-key']) {
+                    //sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml down"
+                    sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml pull"
+                    sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml up -d --build"
+                }
+            }
+        }
+    }
+}
