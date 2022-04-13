@@ -32,9 +32,9 @@ pipeline {
                 environment name: 'TARGET', value: 'run' 
             }
             steps {
-                sh 'python main.py phone text output'
-                sh 'python main.py tablet csv output'
-                sh 'python main.py laptop json output'
+                sh 'python3 main.py phone text output'
+                sh 'python3 main.py tablet csv output'
+                sh 'python3 main.py laptop json output'
             }
          }
         stage("Zip") {
