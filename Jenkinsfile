@@ -53,6 +53,7 @@ pipeline {
                     sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml up -d --build"
                 }
             }
+         }
         stage("Zip") {
             steps {
                 sh "echo 1"
