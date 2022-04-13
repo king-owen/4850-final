@@ -13,18 +13,8 @@ pipeline {
             }
         }
         stage('Code Quality') { 
-            steps {     
-                withCredentials([string(credentialsId: 'DockerHub',variable:'TOKEN')]) { 
-                    sh "docker login -u 'kingofthewestwest' -p '$TOKEN' docker.io" 
-                    //fix this so it builds and pushes all of the images
-                    sh "docker build -t audit:latest --tag kingofthewestwest/audit ./audit/." 
-                    sh "docker push kingofthewestwest/audit" 
-                    sh "docker build -t processing:latest --tag kingofthewestwest/processing ./processing/." 
-                    sh "docker push kingofthewestwest/processing" 
-                    sh "docker build -t receiver:latest --tag kingofthewestwest/receiver ./receiver/." 
-                    sh "docker push kingofthewestwest/receiver" 
-                    sh "docker build -t storage:latest --tag kingofthewestwest/storage ./storage/." 
-                    sh "docker push kingofthewestwest/storage" 
+            steps {
+                sh 'pylint-fail-under --fail_under 7.0 *.py'
                 } 
             } 
         } 
