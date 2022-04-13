@@ -42,7 +42,7 @@ pipeline {
                 script {
                 sh "zip final.zip *.py"
                 sh "echo Owen Anderchek"
-                sh "A01211852"
+                sh "echo A01211852"
             }
             archiveArtifacts artifacts: 'final.zip'
             }
