@@ -6,6 +6,7 @@ pipeline {
     agent any
     environment {
         TARGET = ""
+    }
     stages {
 
         stage('Build') {
