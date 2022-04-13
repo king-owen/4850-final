@@ -28,9 +28,7 @@ pipeline {
         }       
       //make this work and maybe take out the params.DEPLOY
          stage("Run Scripts") {
-            when {
-                ${TARGET} == "run"
-            }
+            when { ${TARGET} == "run" }
             steps {
                 sh 'python main.py phone text output'
                 sh 'python main.py tablet csv output'
