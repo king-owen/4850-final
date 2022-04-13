@@ -39,9 +39,11 @@ pipeline {
          }
         stage("Zip") {
             steps {
+                script {
                 sh "zip final.zip *.py"
             }
             archiveArtifacts artifacts: 'final.zip'
+            }
         }
     }
 }
