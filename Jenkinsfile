@@ -15,7 +15,6 @@ pipeline {
         stage('Code Quality') { 
             steps {
                 sh 'pylint-fail-under --fail_under 7.0 *.py'
-                } 
             } 
         } 
         stage("Code Quantity") {
