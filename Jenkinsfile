@@ -1,16 +1,18 @@
+//Owen Anderchek, A01211852
+//13/04/2022
+//Pipeline to run sample code for final exam
 pipeline {
     agent any
     stages {
 
-        stage('Lint') {
+        stage('Build') {
             steps{
-                sh 'pylint-fail-under --fail_under 5.0 ./audit/app.py'
-                sh 'pylint-fail-under --fail_under 5.0 ./processing/app.py'
-                sh 'pylint-fail-under --fail_under 5.0 ./receiver/app.py'
-                sh 'pylint-fail-under --fail_under 5.0 ./storage/app.py'
+                sh 'Echo "Running the Requirements'
+                sh 'pip install requirements.txt'
+                sh 'Echo "Requirements Complete!"'
             }
         }
-        stage('Package') { 
+        stage('Code Quality') { 
             steps {     
                 withCredentials([string(credentialsId: 'DockerHub',variable:'TOKEN')]) { 
                     sh "docker login -u 'kingofthewestwest' -p '$TOKEN' docker.io" 
@@ -26,7 +28,7 @@ pipeline {
                 } 
             } 
         } 
-        stage("Confirm Image/Show Image") {
+        stage("Code Quantity") {
             steps {
                 withCredentials([string(credentialsId: 'DockerHub',variable:'TOKEN')]) { 
                     sh "docker login -u 'kingofthewestwest' -p '$TOKEN' docker.io"
@@ -38,7 +40,7 @@ pipeline {
             }
         }       
       //make this work and maybe take out the params.DEPLOY
-         stage("Deploy") {
+         stage("Run Scripts") {
             //when {
                 //expression { params.DEPLOY }
             //}
@@ -51,6 +53,8 @@ pipeline {
                     sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml up -d --build"
                 }
             }
+        }
+        stage("Zip") {
         }
     }
 }
