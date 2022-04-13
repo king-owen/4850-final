@@ -54,6 +54,8 @@ pipeline {
                 }
             }
         stage("Zip") {
+            steps {
+                sh "echo 1"
         }
     }
 }
