@@ -19,13 +19,7 @@ pipeline {
         } 
         stage("Code Quantity") {
             steps {
-                withCredentials([string(credentialsId: 'DockerHub',variable:'TOKEN')]) { 
-                    sh "docker login -u 'kingofthewestwest' -p '$TOKEN' docker.io"
-                    sh "docker manifest inspect kingofthewestwest/audit"
-                    sh "docker manifest inspect kingofthewestwest/processing"
-                    sh "docker manifest inspect kingofthewestwest/receiver"
-                    sh "docker manifest inspect kingofthewestwest/storage"
-                }
+                sh 'wc -l *.py'
             }
         }       
       //make this work and maybe take out the params.DEPLOY
