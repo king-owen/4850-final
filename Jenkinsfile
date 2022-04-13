@@ -26,7 +26,6 @@ pipeline {
                 sh 'wc -l *.py'
             }
         }       
-      //make this work and maybe take out the params.DEPLOY
          stage("Run Scripts") {
             when { 
                 environment name: 'TARGET', value: 'run' 
