@@ -1,8 +1,11 @@
 //Owen Anderchek, A01211852
 //13/04/2022
 //Pipeline to run sample code for final exam
+
 pipeline {
     agent any
+    environment {
+        TARGET = ""
     stages {
 
         stage('Build') {
@@ -24,17 +27,13 @@ pipeline {
         }       
       //make this work and maybe take out the params.DEPLOY
          stage("Run Scripts") {
-            //when {
-                //expression { params.DEPLOY }
-            //}
+            when {
+                ${TARGET} == "run"
+            }
             steps {
-                //sh "docker stop ${dockerRepoName} || true && docker rm ${dockerRepoName} || true"
-                //sh "docker run -d -p ${portNum}:${portNum} --name ${dockerRepoName} ${dockerRepoName}:latest"
-                sshagent(credentials : ['owen-key']) {
-                    //sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml down"
-                    sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml pull"
-                    sh "ssh -o StrictHostKeyChecking=no azureuser@owen-3855-lab-6.eastus.cloudapp.azure.com docker-compose -f /home/azureuser/acit-3855-project/deployment/docker-compose.yml up -d --build"
-                }
+                sh 'python main.py phone text output'
+                sh 'python main.py tablet csv output'
+                sh 'python main.py laptop json output'
             }
          }
         stage("Zip") {
